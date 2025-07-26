@@ -1,4 +1,5 @@
-﻿using Soenneker.DataTables.Dtos.Column;
+﻿using Soenneker.DataTables.Attributes.Searchable;
+using Soenneker.DataTables.Dtos.Column;
 using Soenneker.Extensions.Char;
 using System;
 using System.Collections.Generic;
@@ -61,7 +62,15 @@ public static class DataTablesTypesExtension
                 });
             }
 
-            columns.Add(new DataTableColumn {Data = name});
+            bool searchable = prop.IsDefined(typeof(DataTableSearchableAttribute), inherit: false);
+
+            var column = new DataTableColumn
+            {
+                Data = name,
+                Searchable = searchable
+            };
+
+            columns.Add(column);
         }
 
         return columns;
