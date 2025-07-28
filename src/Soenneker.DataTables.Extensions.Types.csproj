@@ -43,6 +43,7 @@
 
     <ItemGroup>
       <PackageReference Include="Soenneker.DataTables.Attributes.Searchable" Version="3.0.1" />
+      <PackageReference Include="Soenneker.DataTables.Attributes.Orderable" Version="3.0.1" />
       <PackageReference Include="Soenneker.DataTables.Dtos.Column" Version="3.0.2" />
       <PackageReference Include="Soenneker.Extensions.Char" Version="3.0.74" />
     </ItemGroup>

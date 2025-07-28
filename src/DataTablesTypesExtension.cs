@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Reflection;
 using System.Text.Json.Serialization;
+using Soenneker.DataTables.Attributes.Orderable;
 
 namespace Soenneker.DataTables.Extensions.Types;
 
@@ -63,11 +64,13 @@ public static class DataTablesTypesExtension
             }
 
             bool searchable = prop.IsDefined(typeof(DataTableSearchableAttribute), inherit: false);
+            bool orderable = prop.IsDefined(typeof(DataTableOrderableAttribute), inherit: false);
 
             var column = new DataTableColumn
             {
                 Data = name,
-                Searchable = searchable
+                Searchable = searchable,
+                Orderable = orderable
             };
 
             columns.Add(column);
