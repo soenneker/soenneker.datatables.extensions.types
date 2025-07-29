@@ -68,15 +68,9 @@ public static class DataTablesTypesExtension
                 column.Type = colAttr.Type;
                 column.Footer = colAttr.Footer;
                 column.AriaTitle = colAttr.AriaTitle;
-
-                if (!colAttr.Visible)
-                    column.Visible = false;
-
-                if (colAttr.Searchable)
-                    column.Searchable = true;
-
-                if (colAttr.Orderable)
-                    column.Orderable = true;
+                column.Visible = colAttr.Visible;
+                column.Searchable = colAttr.Searchable;
+                column.Orderable = colAttr.Orderable;
 
                 if (colAttr.ResponsivePriority != -1)
                     column.ResponsivePriority = colAttr.ResponsivePriority;
@@ -95,8 +89,6 @@ public static class DataTablesTypesExtension
         }
 
         // Sort: columns with explicit order first, then others in declared order
-        return columns
-            .OrderBy(c => c.Order == -1 ? int.MaxValue : c.Order)
-            .ToList();
+        return columns.OrderBy(c => c.Order == -1 ? int.MaxValue : c.Order).ToList();
     }
 }
