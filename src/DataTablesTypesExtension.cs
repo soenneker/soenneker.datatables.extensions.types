@@ -1,9 +1,10 @@
-﻿using Soenneker.DataTables.Dtos.Column;
+﻿using Soenneker.DataTables.Attributes.Column;
+using Soenneker.DataTables.Dtos.Column;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using System.Text.Json.Serialization;
-using Soenneker.DataTables.Attributes.Column;
 
 namespace Soenneker.DataTables.Extensions.Types;
 
@@ -68,7 +69,6 @@ public static class DataTablesTypesExtension
                 column.Footer = colAttr.Footer;
                 column.AriaTitle = colAttr.AriaTitle;
 
-                // Sentinel-based assignments for value types
                 if (!colAttr.Visible)
                     column.Visible = false;
 
@@ -94,6 +94,9 @@ public static class DataTablesTypesExtension
             columns.Add(column);
         }
 
-        return columns;
+        // Sort: columns with explicit order first, then others in declared order
+        return columns
+            .OrderBy(c => c.Order == -1 ? int.MaxValue : c.Order)
+            .ToList();
     }
 }
