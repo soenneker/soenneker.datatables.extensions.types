@@ -47,29 +47,52 @@ public static class DataTablesTypesExtension
             if (prop.GetCustomAttribute<JsonIgnoreAttribute>() is not null)
                 continue;
 
+            DataTableColumn column;
+
             var colAttr = prop.GetCustomAttribute<DataTableColumnAttribute>();
 
-            var column = new DataTableColumn
+            if (colAttr == null)
             {
-                Data = colAttr?.Data,
-                Title = colAttr?.Title,
-                Visible = colAttr?.Visible,
-                Searchable = colAttr?.Searchable,
-                Orderable = colAttr?.Orderable,
-                Width = colAttr?.Width,
-                ClassName = colAttr?.ClassName,
-                CellType = colAttr?.CellType,
-                ContentPadding = colAttr?.ContentPadding,
-                DefaultContent = colAttr?.DefaultContent,
-                Name = colAttr?.Name,
-                OrderData = colAttr?.OrderData,
-                OrderDataType = colAttr?.OrderDataType,
-                OrderSequence = colAttr?.OrderSequence,
-                Type = colAttr?.Type,
-                Footer = colAttr?.Footer,
-                AriaTitle = colAttr?.AriaTitle,
-                ResponsivePriority = colAttr?.ResponsivePriority
-            };
+                column = new DataTableColumn
+                {
+                    Data = colAttr?.Data
+                };
+            }
+            else
+            {
+                column = new DataTableColumn
+                {
+                    Data = colAttr?.Data,
+                    Title = colAttr?.Title,
+                    Visible = colAttr?.Visible,
+                    Searchable = colAttr?.Searchable,
+                    Orderable = colAttr?.Orderable,
+                    Width = colAttr?.Width,
+                    ClassName = colAttr?.ClassName,
+                    CellType = colAttr?.CellType,
+                    ContentPadding = colAttr?.ContentPadding,
+                    DefaultContent = colAttr?.DefaultContent,
+                    Name = colAttr?.Name,
+                    OrderData = colAttr?.OrderData,
+                    OrderDataType = colAttr?.OrderDataType,
+                    OrderSequence = colAttr?.OrderSequence,
+                    Type = colAttr?.Type,
+                    Footer = colAttr?.Footer,
+                    AriaTitle = colAttr?.AriaTitle,
+                    ResponsivePriority = colAttr?.ResponsivePriority,
+                    Order = colAttr?.Order
+                };
+            }
+
+            if (column.Data == null)
+            {
+                var jsonProp = prop.GetCustomAttribute<JsonPropertyNameAttribute>();
+
+                if (jsonProp != null)
+                    column.Data = jsonProp;
+                else
+                    column.Data = prop.Name;
+            }
 
             columns.Add(column);
         }
