@@ -1,11 +1,9 @@
-﻿using Soenneker.DataTables.Attributes.Searchable;
-using Soenneker.DataTables.Dtos.Column;
-using Soenneker.Extensions.Char;
+﻿using Soenneker.DataTables.Dtos.Column;
 using System;
 using System.Collections.Generic;
 using System.Reflection;
 using System.Text.Json.Serialization;
-using Soenneker.DataTables.Attributes.Orderable;
+using Soenneker.DataTables.Attributes.Column;
 
 namespace Soenneker.DataTables.Extensions.Types;
 
@@ -49,28 +47,28 @@ public static class DataTablesTypesExtension
             if (prop.GetCustomAttribute<JsonIgnoreAttribute>() is not null)
                 continue;
 
-            var jsonAttr = prop.GetCustomAttribute<JsonPropertyNameAttribute>();
-            string? name = jsonAttr?.Name;
-
-            if (name is null)
-            {
-                string propName = prop.Name;
-
-                name = string.Create(propName.Length, propName, static (span, s) =>
-                {
-                    span[0] = s[0].ToLowerInvariant();
-                    s.AsSpan(1).CopyTo(span[1..]);
-                });
-            }
-
-            bool searchable = prop.IsDefined(typeof(DataTableSearchableAttribute), inherit: false);
-            bool orderable = prop.IsDefined(typeof(DataTableOrderableAttribute), inherit: false);
+            var colAttr = prop.GetCustomAttribute<DataTableColumnAttribute>();
 
             var column = new DataTableColumn
             {
-                Data = name,
-                Searchable = searchable,
-                Orderable = orderable
+                Data = colAttr?.Data,
+                Title = colAttr?.Title,
+                Visible = colAttr?.Visible,
+                Searchable = colAttr?.Searchable,
+                Orderable = colAttr?.Orderable,
+                Width = colAttr?.Width,
+                ClassName = colAttr?.ClassName,
+                CellType = colAttr?.CellType,
+                ContentPadding = colAttr?.ContentPadding,
+                DefaultContent = colAttr?.DefaultContent,
+                Name = colAttr?.Name,
+                OrderData = colAttr?.OrderData,
+                OrderDataType = colAttr?.OrderDataType,
+                OrderSequence = colAttr?.OrderSequence,
+                Type = colAttr?.Type,
+                Footer = colAttr?.Footer,
+                AriaTitle = colAttr?.AriaTitle,
+                ResponsivePriority = colAttr?.ResponsivePriority
             };
 
             columns.Add(column);
