@@ -42,7 +42,7 @@
 
     <ItemGroup>
       <PackageReference Include="Soenneker.DataTables.Attributes.Column" Version="4.0.7" />
-      <PackageReference Include="Soenneker.DataTables.Dtos.Column" Version="4.0.8" />
+      <PackageReference Include="Soenneker.DataTables.Dtos.Column" Version="4.0.9" />
       <PackageReference Include="Soenneker.Extensions.Char" Version="4.0.80" />
     </ItemGroup>
 </Project>
