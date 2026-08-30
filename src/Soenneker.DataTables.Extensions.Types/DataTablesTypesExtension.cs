@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.Text.Json;
 using System.Text.Json.Serialization;
 
 namespace Soenneker.DataTables.Extensions.Types;
@@ -45,7 +46,12 @@ public static class DataTablesTypesExtension
 
         foreach (PropertyInfo prop in properties)
         {
-            if (prop.GetCustomAttribute<JsonIgnoreAttribute>() is not null)
+            if (prop.GetMethod is null || prop.GetIndexParameters().Length != 0)
+                continue;
+
+            JsonIgnoreAttribute? ignoreAttribute = prop.GetCustomAttribute<JsonIgnoreAttribute>();
+
+            if (ignoreAttribute is not null && ignoreAttribute.Condition != JsonIgnoreCondition.Never)
                 continue;
 
             var colAttr = prop.GetCustomAttribute<DataTableColumnAttribute>();
@@ -82,7 +88,7 @@ public static class DataTablesTypesExtension
             if (column.Data == null)
             {
                 var jsonProp = prop.GetCustomAttribute<JsonPropertyNameAttribute>();
-                column.Data = jsonProp?.Name ?? prop.Name;
+                column.Data = jsonProp?.Name ?? JsonNamingPolicy.CamelCase.ConvertName(prop.Name);
             }
 
             columns.Add(column);

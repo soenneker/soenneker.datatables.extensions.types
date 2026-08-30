@@ -5,31 +5,51 @@
 
 # Soenneker.DataTables.Extensions.Types
 
-A collection of helpful Type extension methods relating to DataTable.js.
+Builds DataTables column definitions from a .NET row type, including JSON names and optional `DataTableColumnAttribute` configuration.
 
-## Install
+## Installation
 
 ```bash
 dotnet add package Soenneker.DataTables.Extensions.Types
 ```
 
-## Quick start
+## Define a row
+
+```csharp
+using System.Text.Json.Serialization;
+using Soenneker.DataTables.Attributes.Column;
+
+public sealed class CustomerRow
+{
+    [DataTableColumn(Title = "Customer", Searchable = true, Orderable = true, Order = 0)]
+    public required string Name { get; init; }
+
+    [JsonPropertyName("created_at")]
+    [DataTableColumn(Title = "Created", Orderable = true, Width = "12rem", Order = 1)]
+    public DateTimeOffset CreatedAt { get; init; }
+
+    [JsonIgnore]
+    public string? InternalNote { get; init; }
+}
+```
+
+## Generate columns
 
 ```csharp
 using Soenneker.DataTables.Extensions.Types;
 
-Type type = /* obtain from your application */;
-var result = type.ToDataTableColumns();
+List<DataTableColumn> columns = typeof(CustomerRow).ToDataTableColumns();
 ```
 
-Converts the public instance properties of a type into a list of `DataTableColumn` objects for use with DataTables.js, using the `JsonPropertyNameAttribute` if present.
+The example produces columns whose `Data` values are `name` and `created_at`. Explicit `JsonPropertyName` values win; otherwise the CLR property name is converted with `JsonNamingPolicy.CamelCase`.
 
-## What you get
+`DataTableColumnAttribute.Data` can override the data source entirely. Other attribute values such as title, visibility, CSS class, searchability, ordering, responsive priority, and width are copied to the resulting DTO.
 
-- `DataTablesTypesExtension` — A collection of helpful Type extension methods relating to DataTable.js.
+## Selection and ordering
 
-## API at a glance
+- Public instance properties with public getters are included.
+- Indexers and properties ignored by `System.Text.Json` are excluded. `[JsonIgnore(Condition = JsonIgnoreCondition.Never)]` remains included.
+- Columns with an explicit non-negative `Order` come first, in ascending order.
+- Columns without an explicit order retain their reflection order after explicitly ordered columns.
 
-| API | What it does | Result / important behavior |
-| --- | --- | --- |
-| `DataTablesTypesExtension.ToDataTableColumns(type)` | Converts the public instance properties of a type into a list of `DataTableColumn` objects for use with DataTables.js, using the `JsonPropertyNameAttribute` if present. | A list of `DataTableColumn` where each column corresponds to a public property that is not marked with `JsonIgnoreAttribute`. The column name will use the value of `JsonPropertyNameAttribute` if present, or fall back to a camelCase version of the property name. |
+Make sure the serializer used for row data follows the same names. A custom naming policy can differ from the camel-case fallback; add `JsonPropertyName` in that case.
