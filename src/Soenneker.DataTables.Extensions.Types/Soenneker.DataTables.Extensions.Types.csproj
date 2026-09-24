@@ -45,6 +45,6 @@
 
     <ItemGroup>
         <PackageReference Include="Soenneker.DataTables.Attributes.Column" Version="4.0.26" />
-        <PackageReference Include="Soenneker.DataTables.Dtos.Column" Version="4.0.28" />
+        <PackageReference Include="Soenneker.DataTables.Dtos.Column" Version="4.0.29" />
     </ItemGroup>
 </Project>
