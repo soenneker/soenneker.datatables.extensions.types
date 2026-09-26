@@ -1,4 +1,5 @@
-﻿using Soenneker.DataTables.Attributes.Column;
+using System.Diagnostics.CodeAnalysis;
+using Soenneker.DataTables.Attributes.Column;
 using Soenneker.DataTables.Dtos.Column;
 using System;
 using System.Collections.Generic;
@@ -39,7 +40,7 @@ public static class DataTablesTypesExtension
     /// </code>
     /// The result will contain two columns: "full_name" and "email".
     /// </example>
-    public static List<DataTableColumn> ToDataTableColumns(this Type type)
+    public static List<DataTableColumn> ToDataTableColumns([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicProperties)] this Type type)
     {
         PropertyInfo[] properties = type.GetProperties(BindingFlags.Public | BindingFlags.Instance);
         var columns = new List<DataTableColumn>(properties.Length);
